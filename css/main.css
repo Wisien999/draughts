@@ -18,9 +18,10 @@ a {
 div#board {
     margin-left: auto;
     margin-right: auto;
-    height: 611px;
-    width: 611px;
+    height: 628px;
+    width: 635px;
     background: #772323;
+    border: 5px solid red;
 }
 
 .game {
