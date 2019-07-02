@@ -18,11 +18,17 @@ a {
 div#board {
     margin-left: auto;
     margin-right: auto;
-    height: 628px;
-    width: 635px;
+    height: 614px;
+    width: 614px;
     background: #772323;
+    /* box-sizing: border-box; */
     border: 5px solid red;
-}
+    /* transition: ease-in-out 3s all; */
+    animation-name: changeTurn;
+    animation-duration: 5s;
+    animation-timing-function: ease-in-out; 
+    /* transform: rotateX(90deg); */
+    }
 
 .game {
     -webkit-box-shadow: 0px 0px 20px 0px rgba(235,235,235,1);
@@ -38,10 +44,17 @@ div#board {
 .square {
     height: 75px;
     width: 75px;
-    display: inline-block;
+    float: left;
+    margin: 1px;
     cursor: pointer;
     box-sizing: border-box;
 }
+
+.square:nth-child(8n+1) {margin-left: 0;}
+.square:nth-child(8n) {margin-right: 0;}
+/* .square:first-child {
+    margin-top: 20px;
+} */
 
 .squareA {
     border: 2px solid #0c697b;
@@ -61,7 +74,8 @@ div#board {
 	background-color: black;
 }
 
-/* #s0-0, #s0-2, #s0-4, #s0-6, #s1-1, #s1-3, #s1-5, #s1-7, #s2-0, #s2-2, #s2-4, #s2-6, #s3-1, #s3-3, #s3-5, #s3-7, #s4-0, #s4-2, #s4-4, #s4-6, #s5-1, #s5-3, #s5-5, #s5-7, #s6-0, #s6-2, #s6-4, #s6-6, #s7-1, #s7-3, #s7-5, #s7-7 {
-    background-color: white;
-} */
+@keyframes changeTurn {
+    20% {transform: rotate3d(20, 5, -3, 55deg);}
+    80% {transform: rotate3d(180, 50, 270, 180deg);}
+}
 
