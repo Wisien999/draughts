@@ -85,7 +85,7 @@ function showPossibilities(row, column, isContinued = false) {
 
         notEmpty = false;
 
-        if (board[row][column] === -2 || board[row][column] === 2) {
+        if (Math.abs(board[row][column]) === 2) {
 
         }
 
@@ -111,9 +111,26 @@ function doAMove(fromRow, fromColumn, toRow, toColumn) {
             }
 
         }
+        else if (Math.abs(fromColumn - toColumn) === 2 && Math.abs(fromRow - toRow) === 2) {
+            board[toRow][toColumn] = board[fromRow][fromColumn];
+            board[fromRow][fromColumn] = 0;
 
+            board[(toRow + fromRow) / 2][(toColumn + fromColumn) / 2] = 0;
 
-        
+            if (fromSquare.hasClass("black_pawn")) { // Alternatywny sposób: Tomboy
+                toSquare.addClass("black_pawn");
+                fromSquare.removeClass("black_pawn");
+                $(`#s${(toRow + fromRow) / 2}-${(toColumn + fromColumn) / 2}`).removeClass("white_pawn");
+                white_pawns--;
+            }
+            else if (fromSquare.hasClass("white_pawn")) {
+                toSquare.addClass("white_pawn");
+                fromSquare.removeClass("white_pawn");
+                $(`#s${(toRow + fromRow) / 2}-${(toColumn + fromColumn) / 2}`).removeClass("black_pawn");
+                black_pawns--;
+            }
+        }
+
         // W przypadku wielokrotnego zbijania zachowywać się tak jak podczas jednokrotnego, ale na koniec ni przechodzić do kolejnej tury.
     }
 
@@ -126,4 +143,16 @@ function changeTurn() {
     const board = $("#board");
 
     board.css("transform", " rotate3d(20, 5, -3, 55deg)");
+}
+
+function update() {
+    $(".square").removeClass("white_pawn black_pawn");
+    for (let row = 0; row < 8; row++) {
+        for (let column = 0; column < 8; column++) {
+            if (board[row][column] === -1) $(`#s${row}-${column}`).addClass("black_pawn");
+            else if (board[row][column] === -2) $(`#s${row}-${column}`).addClass("black_king");
+            else if (board[row][column] === 1) $(`#s${row}-${column}`).addClass("white_pawn");
+            else if (board[row][column] === 2) $(`#s${row}-${column}`).addClass("white_king");
+        }
+    }
 }
