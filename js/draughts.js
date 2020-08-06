@@ -1,7 +1,9 @@
 let firstClickInATurn = true;
-let rowModificator = -1;
+let generalRowModificator = -1;
+const allModPairs = [[1, 1], [1, -1], [-1, 1], [-1, -1]];
 let selected = [-1, -1];
 let notEmpty = false;
+let blockChoose = false;
 let black_pawns = 12;
 let white_pawns = 12;
 
@@ -14,13 +16,14 @@ $('body').click((e) => {
     for (let row = 0; row < 8; row++) {
         for (let column = 0; column < 8; column++) {
             if (e.target.id === "s" + row + "-" + column) {
+
                 console.log(`row: ${row}    column: ${column}`);
-                // alert($('#s' + row + "-" + column).hasClass("squareA"));
+                
                 if (selected[0] >= 0 && $(`#s${row}-${column}`).hasClass("squareA") && (selected[0] !== row || selected[1] !== column)) { //Check if the toSquare has "squareA" class AND its not fromSquare
                     // alert(e.target +"- next -"+ e.target.id);
                     doAMove(selected[0], selected[1], row, column);
                 }
-                else {
+                else if (!blockChoose){
                     // alert(e.target +"- next -"+ e.target.id);
                     selected[0] = row;
                     selected[1] = column;
@@ -35,35 +38,20 @@ $('body').click((e) => {
 
 });
 
-function showPossibilities(row, column, isContinued = false, modificators = [[-1, 1], [-1, 1]]) {
+function showPossibilities(row, column, isContinued = false, modificators = [[1, 1], [1, -1], [-1, 1], [-1, -1]]) {
     const selectedSquare = $('#s' + row + "-" + column);
 
-    if (rowModificator === -1 && board[row][column] > 0) {
-        selectedSquare.addClass('squareA');
-        notEmpty = true;
-
-    }
-    if (rowModificator === 1 && board[row][column] < 0) {
+    // Math.sign(n) returns -1 for negative n and 1 for positive n
+    // It can be used to determine whose pawn is on the square
+    if (Math.sign(board[row][column]) == -generalRowModificator) {
         selectedSquare.addClass('squareA');
         notEmpty = true;
     }
 
     if (isContinued || notEmpty) {
         try {
-            console.log("Im here");
-            if (board[row + rowModificator][column + 1] === 0 && !isContinued) {
-                $('#s' + (row + rowModificator) + "-" + (column + 1)).addClass('squareA');
-            }
-            else {
-                modificators[0].forEach(rowMod => {
-                    if ((board[row + rowMod][column + 1] === rowModificator || board[row + rowMod][column + 1] === rowModificator * 2) && board[row + (rowMod * 2)][column + 2] === 0) {
-                        $('#s' + (row + (rowMod * 2)) + "-" + (column + 2)).addClass('squareA');
-                        // remove not-beating possibility because the player must beat the pawn
-                        $('#s' + (row + rowMod) + "-" + (column - 1)).removeClass('squareA');
-                        modC = [rowMod];
-                        showPossibilities(row + (rowMod * 2), column + 2, true, [[-1,1], modC]);
-                    } 
-                });
+            if (board[row + generalRowModificator][column + 1] === 0 && !isContinued) {
+                $(`#s${row + generalRowModificator}-${column + 1}`).addClass('squareA');
             }
         } catch (error) {
             console.log("err");
@@ -71,32 +59,32 @@ function showPossibilities(row, column, isContinued = false, modificators = [[-1
         }
 
         try {
-            if (board[row + rowModificator][column - 1] === 0 && !isContinued) {
-                $('#s' + (row + rowModificator) + "-" + (column - 1)).addClass('squareA');
+            if (board[row + generalRowModificator][column - 1] === 0 && !isContinued) {
+                $(`#s${row + generalRowModificator}-${column - 1}`).addClass('squareA');
             }
-            else {
-                modificators[1].forEach(rowMod => {
-                    if ((board[row + rowMod][column - 1] === rowModificator || board[row + rowMod][column - 1] === rowModificator * 2) && board[row + (rowMod * 2)][column - 2] === 0) {
-                        $('#s' + (row + (rowMod * 2)) + "-" + (column - 2)).addClass('squareA');
-                        // remove not-beating possibility because the player must beat the pawn
-                        $('#s' + (row + rowMod) + "-" + (column + 1)).removeClass('squareA');
-                        modC = [rowMod];
-                        // modC = modificators[1].filter(el => el != -rowMod);
-                        showPossibilities(row + (rowMod * 2), column - 2, true, [modC, [-1,1]]);
-                    } 
-                });
-            }
-            // else if ((board[row + rowModificator][column - 1] === rowModificator || board[row + rowModificator][column - 1] === rowModificator * 2) && board[row + (rowModificator * 2)][column - 2] === 0) {
-            //     $('#s' + (row + (rowModificator * 2)) + "-" + (column - 2)).addClass('squareA');
-            //     // remove not-beating possibility because the player must beat the pawn
-            //     $('#s' + (row + rowModificator) + "-" + (column + 1)).removeClass('squareA');
-            //     showPossibilities(row + (rowModificator * 2), column - 2, true);
-            // }
-            // console.log("Im here too!");
         } catch (error) {
             console.log("err!");
             console.log(error);
         }
+
+
+        for (let index = 0; index < modificators.length; index++) {
+            const modificatorsPair = modificators[index];
+            const rowMod = modificatorsPair[0];
+            const columnMod = modificatorsPair[1];
+
+            // Math.sign(n) returns -1 for negative n and 1 for positive n
+            // It can be used to determine whose pawn is on the square
+            if (Math.sign(board[row + rowMod][column + columnMod]) === generalRowModificator && board[row + (rowMod * 2)][column + columnMod * 2] === 0) {
+                $('#s' + (row + (rowMod * 2)) + "-" + (column + columnMod * 2)).addClass('squareA');
+                // remove not-beating possibility because the player must beat the pawn
+                $(`#s${row + generalRowModificator}-${column + 1}`).removeClass('squareA');
+                $(`#s${row + generalRowModificator}-${column - 1}`).removeClass('squareA');
+                // continue search for possible kills ignoring the returning move
+                showPossibilities(row + rowMod * 2, column + columnMod * 2, true, allModPairs.filter(elem => elem[0] != -rowMod || elem[1] != -columnMod));
+            }
+        }
+
 
         notEmpty = false;
 
@@ -138,12 +126,13 @@ function doAMove(fromRow, fromColumn, toRow, toColumn, toKill = 1) {
         // check all [row modificator, column modificator] combinations in search for active squares
         [[-2, 2], [2, 2], [-2, -2], [2, -2]].forEach(element => {
             if ($(`#s${toRow + element[0]}-${toColumn + element[1]}`).hasClass('squareA')) {
-               doNotEndTurn = true;
+                doNotEndTurn = true;
             }
         });
         if (doNotEndTurn) {
             // console.log("abudabda");
             selected = [toRow, toColumn];
+            blockChoose = true;
         }
         else {
             changeTurn();
@@ -160,8 +149,9 @@ function changeTurn() {
     }
     const board = $("#board");
 
-    rowModificator = -rowModificator;
+    generalRowModificator = -generalRowModificator;
     selected[0] = -1;
+    blockChoose = false;
 
     // board.css("transform", " rotate3d(20, 5, -3, 55deg)");
 }
