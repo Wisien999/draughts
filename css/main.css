@@ -24,9 +24,9 @@ div#board {
     /* box-sizing: border-box; */
     border: 5px solid red;
     /* transition: ease-in-out 3s all; */
-    animation-name: changeTurn;
+    /* animation-name: changeTurn;
     animation-duration: 5s;
-    animation-timing-function: ease-in-out; 
+    animation-timing-function: ease-in-out;  */
     /* transform: rotateX(90deg); */
     }
 
