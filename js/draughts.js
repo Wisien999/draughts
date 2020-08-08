@@ -20,11 +20,9 @@ $('body').click((e) => {
                 console.log(`row: ${row}    column: ${column}`);
                 
                 if (selected[0] >= 0 && $(`#s${row}-${column}`).hasClass("squareA") && (selected[0] !== row || selected[1] !== column)) { //Check if the toSquare has "squareA" class AND its not fromSquare
-                    // alert(e.target +"- next -"+ e.target.id);
                     doAMove(selected[0], selected[1], row, column);
                 }
                 else if (!blockChoose){
-                    // alert(e.target +"- next -"+ e.target.id);
                     selected[0] = row;
                     selected[1] = column;
                     $('.squareA').removeClass('squareA');
@@ -89,7 +87,7 @@ function showPossibilities(row, column, isContinued = false, modificators = [[1,
         notEmpty = false;
 
         if (Math.abs(board[row][column]) === 2) {
-            // custom behavior for 
+            // custom behavior for the queen
         }
 
     }
