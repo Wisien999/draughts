@@ -13,26 +13,21 @@ let white_pawns = 12;
 const board = [[0, 0, 0, 0, 0, -1, 0, -1], [-1, 0, 0, 0, -1, 0, -1, 0], [0, -1, 0, -1, 0, -1, 0, -1], [0, 0, 0, 0, 0, 0, 0, 0], [0, -1, 0, 0, 0, 0, 0, 0], [1, 0, 1, 0, 1, 0, 1, 0], [0, 1, 0, 1, 0, 1, 0, 1], [1, 0, 1, 0, 1, 0, 1, 0]];
 
 $('body').click((e) => {
-    for (let row = 0; row < 8; row++) {
-        for (let column = 0; column < 8; column++) {
-            if (e.target.id === "s" + row + "-" + column) {
+    // Get row and column from square ID
+    let row = parseInt(e.target.id[1]);
+    let column = parseInt(e.target.id[3]);
 
-                console.log(`row: ${row}    column: ${column}`);
-                
-                if (selected[0] >= 0 && $(`#s${row}-${column}`).hasClass("squareA") && (selected[0] !== row || selected[1] !== column)) { //Check if the toSquare has "squareA" class AND its not fromSquare
-                    doAMove(selected[0], selected[1], row, column);
-                }
-                else if (!blockChoose){
-                    selected[0] = row;
-                    selected[1] = column;
-                    $('.squareA').removeClass('squareA');
-                    showPossibilities(row, column);
-                }
-                break;
-            }
-        }
+    console.log(`row: ${row}    column: ${column}`);
+
+    if (selected[0] >= 0 && $(`#s${row}-${column}`).hasClass("squareA") && (selected[0] !== row || selected[1] !== column)) { //Check if the toSquare has "squareA" class AND its not fromSquare
+        doAMove(selected[0], selected[1], row, column);
     }
-
+    else if (!blockChoose) {
+        selected[0] = row;
+        selected[1] = column;
+        $('.squareA').removeClass('squareA');
+        showPossibilities(row, column);
+    }
 
 });
 
