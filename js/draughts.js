@@ -1,4 +1,5 @@
-let firstClickInATurn = true;
+const boardSize = 8;
+
 let generalRowModificator = -1;
 let beatingPossible = false;
 const allModPairs = [[1, 1], [1, -1], [-1, 1], [-1, -1]];
@@ -64,15 +65,16 @@ function showPossibilities(row, column, isContinued = false, modificators = [[1,
             console.log(error);
         }
 
-
+        // check if it is possible to beat enemy's pawn in some way 
         for (let index = 0; index < modificators.length; index++) {
             const modificatorsPair = modificators[index];
             const rowMod = modificatorsPair[0];
             const columnMod = modificatorsPair[1];
 
-
+            // check if it is possible to beat enemy's pawn in currently considered way
             if (isBeatingThisWayPossible(row, column, rowMod, columnMod)) {
-                $('#s' + (row + (rowMod * 2)) + "-" + (column + columnMod * 2)).addClass('squareA');
+                // activate target square
+                $('#s' + (row + rowMod * 2) + "-" + (column + columnMod * 2)).addClass('squareA');
                 // remove not-beating possibility because the player must beat the pawn
                 $(`#s${row + generalRowModificator}-${column + 1}`).removeClass('squareA');
                 $(`#s${row + generalRowModificator}-${column - 1}`).removeClass('squareA');
@@ -152,8 +154,8 @@ function changeTurn() {
     blockChoose = false;
     beatingPossible = false;
 
-    for (let row = 0; row < 8; row++) {
-        for (let column = 0; column < 8; column++) {
+    for (let row = 0; row < boardSize; row++) {
+        for (let column = 0; column < boardSize; column++) {
             if (board[row][column] === -generalRowModificator) {
                 beatingPossible = isAnyBeatingPossible(row, column);
             }
@@ -168,8 +170,8 @@ function changeTurn() {
 
 function update() {
     $(".square").removeClass("white_pawn black_pawn black_king whie_king");
-    for (let row = 0; row < 8; row++) {
-        for (let column = 0; column < 8; column++) {
+    for (let row = 0; row < boardSize; row++) {
+        for (let column = 0; column < boardSize; column++) {
             if (board[row][column] === -1) $(`#s${row}-${column}`).addClass("black_pawn");
             else if (board[row][column] === -2) $(`#s${row}-${column}`).addClass("black_king");
             else if (board[row][column] === 1) $(`#s${row}-${column}`).addClass("white_pawn");
@@ -199,7 +201,7 @@ function isAnyBeatingPossible(row, column) {
 
 
 function isBeatingThisWayPossible(row, column, rowMod, columnMod) {
-    // put it in trycatch structure to prevent outOfBoundException
+    // put it in the trycatch structure to prevent outOfBoundException
     try {
         // Math.sign(n) returns -1 for negative n and 1 for positive n
         // It can be used to determine whose pawn is on the square
