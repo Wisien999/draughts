@@ -70,6 +70,16 @@ div#board {
     image-resolution: 75px 75px;;
 }
 
+.black_queen {
+    background-image: url(../img/queen_b.png);
+    image-resolution: 75px 75px;;
+}
+
+.white_queen {
+    background-image: url(../img/queen_w.png);
+    image-resolution: 75px 75px;;
+}
+
 .square {
 	background-color: black;
 }

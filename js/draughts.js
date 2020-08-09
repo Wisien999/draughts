@@ -82,8 +82,26 @@ function showPossibilities(row, column, isContinued = false, modificators = allM
 
         notEmpty = false;
 
+        // custom behavior for the queen
         if (Math.abs(board[row][column]) === 2) {
-            // custom behavior for the queen
+            for (let index = 0; index < allModPairs.length; index++) {
+                const modPair = allModPairs[index];
+                const rowMod = modPair[0];
+                const columnMod = modPair[1];
+
+                try {
+                    for (let distance = 0; distance < boardSize; distance++) {
+                        if (board[row + rowMod * distance][column + columnMod * distance] === -generalRowModificator) {
+                            break;
+                        }
+                        else if (board[row + rowMod * distance][column + columnMod * distance] === 0) {
+                            $(`#s${row + rowMod * distance}-${column + columnMod * distance}`).addClass('squareA');
+                        }
+                    }
+                } catch (error) {
+
+                }
+            }
         }
 
     }
@@ -162,13 +180,13 @@ function changeTurn() {
 }
 
 function update() {
-    $(".square").removeClass("white_pawn black_pawn black_king whie_king");
+    $(".square").removeClass("white_pawn black_pawn black_queen whie_queen");
     for (let row = 0; row < boardSize; row++) {
         for (let column = 0; column < boardSize; column++) {
             if (board[row][column] === -1) $(`#s${row}-${column}`).addClass("black_pawn");
-            else if (board[row][column] === -2) $(`#s${row}-${column}`).addClass("black_king");
+            else if (board[row][column] === -2) $(`#s${row}-${column}`).addClass("black_queen");
             else if (board[row][column] === 1) $(`#s${row}-${column}`).addClass("white_pawn");
-            else if (board[row][column] === 2) $(`#s${row}-${column}`).addClass("white_king");
+            else if (board[row][column] === 2) $(`#s${row}-${column}`).addClass("whie_queen");
         }
     }
 }
@@ -184,7 +202,6 @@ function isBeatingInAnyWayPossible(row, column) {
         console.log(`rowMod: ${rowMod}    columnMod: ${columnMod}`);
         if (isBeatingThisWayPossible(row, column, rowMod, columnMod)) {
             return true;
-
         }
     }
 
