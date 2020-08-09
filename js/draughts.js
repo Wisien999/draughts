@@ -94,7 +94,7 @@ function showPossibilities(row, column, isContinued = false, modificators = [[1,
     }
 }
 
-function doAMove(fromRow, fromColumn, toRow, toColumn, toKill = 1) {
+function doAMove(fromRow, fromColumn, toRow, toColumn) {
     const fromSquare = $('#s' + fromRow + "-" + fromColumn);
     const toSquare = $('#s' + toRow + '-' + toColumn);
 
@@ -104,9 +104,12 @@ function doAMove(fromRow, fromColumn, toRow, toColumn, toKill = 1) {
         board[toRow][toColumn] = board[fromRow][fromColumn];
         board[fromRow][fromColumn] = 0;
 
+        // killing behavior
         if (Math.abs(fromColumn - toColumn) === 2 && Math.abs(fromRow - toRow) === 2) {
+            // remove enemy's pawn from logical board
             board[(toRow + fromRow) / 2][(toColumn + fromColumn) / 2] = 0;
 
+            // update amount of pawns of each player
             if (fromSquare.hasClass("black_pawn")) {
                 white_pawns--;
             }
@@ -157,7 +160,7 @@ function changeTurn() {
     for (let row = 0; row < boardSize; row++) {
         for (let column = 0; column < boardSize; column++) {
             if (board[row][column] === -generalRowModificator) {
-                beatingPossible = isAnyBeatingPossible(row, column);
+                beatingPossible = isBeatingInAnyWayPossible(row, column);
             }
             if (beatingPossible) {
                 return 0;
@@ -180,7 +183,7 @@ function update() {
     }
 }
 
-function isAnyBeatingPossible(row, column) {
+function isBeatingInAnyWayPossible(row, column) {
 
     for (let index = 0; index < allModPairs.length; index++) {
         const modificatorsPair = allModPairs[index];
