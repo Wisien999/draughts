@@ -22,10 +22,7 @@ $('body').click((e) => {
     console.log(`row: ${row}    column: ${column}`);
 
     if (selected[0] >= 0 && $(`#s${row}-${column}`).hasClass("squareA") && (selected[0] !== row || selected[1] !== column)) { //Check if the toSquare has "squareA" class AND its not fromSquare
-        // prevent skipping beating
-        if (Math.abs(selected[0] - row) === 1 || Math.abs(selected[0] - row) === 2 && board[(selected[0] + row) / 2][(selected[1] + column) / 2] === generalRowModificator) {
-            doAMove(selected[0], selected[1], row, column);
-        }
+        doAMove(selected[0], selected[1], row, column);
     }
     else if (!blockChoose) {
         selected[0] = row;
@@ -36,7 +33,7 @@ $('body').click((e) => {
 
 });
 
-function showPossibilities(row, column, isContinued = false, modificators = [[1, 1], [1, -1], [-1, 1], [-1, -1]]) {
+function showPossibilities(row, column, isContinued = false, modificators = allModPairs) {
     const selectedSquare = $('#s' + row + "-" + column);
 
     // Math.sign(n) returns -1 for negative n and 1 for positive n
@@ -78,8 +75,6 @@ function showPossibilities(row, column, isContinued = false, modificators = [[1,
                 // remove not-beating possibility because the player must beat the pawn
                 $(`#s${row + generalRowModificator}-${column + 1}`).removeClass('squareA');
                 $(`#s${row + generalRowModificator}-${column - 1}`).removeClass('squareA');
-                // continue search for possible kills ignoring the returning move
-                showPossibilities(row + rowMod * 2, column + columnMod * 2, true, allModPairs.filter(elem => elem[0] != -rowMod || elem[1] != -columnMod));
             }
 
         }
@@ -124,18 +119,13 @@ function doAMove(fromRow, fromColumn, toRow, toColumn) {
         // remove active square class to avoid problem in next loop
         fromSquare.removeClass("squareA");
 
-        // determine if round should be ended or not
-        let doNotEndTurn = false;
-        // check all [row modificator, column modificator] combinations in search for active squares
-        [[-2, 2], [2, 2], [-2, -2], [2, -2]].forEach(element => {
-            if ($(`#s${toRow + element[0]}-${toColumn + element[1]}`).hasClass('squareA')) {
-                doNotEndTurn = true;
-            }
-        });
-        if (doNotEndTurn) {
+        // determine if round should be ended or not        
+        if (isBeatingInAnyWayPossible(toRow, toColumn)) {
             // console.log("abudabda");
             selected = [toRow, toColumn];
             blockChoose = true;
+            // show possible kills
+            showPossibilities(toRow, toColumn, true);
         }
         else {
             changeTurn();
