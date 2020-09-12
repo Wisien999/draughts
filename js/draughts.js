@@ -273,11 +273,23 @@ function doAMove(fromRow, fromColumn, toRow, toColumn) {
     update()
 }
 
-function changeTurn() {
+async function changeTurn() {
     $('.squareA').removeClass('squareA');
 
     if (white_pawns === 0 || black_pawns === 0) {
-        alert("END OF GAME");
+        // set winner
+        if (white_pawns === 0) {
+            sessionStorage.setItem("winner", "Black");
+        }
+        else if (black_pawns === 0) {
+            sessionStorage.setItem("winner", "White");
+        }
+
+        // wait for 2 seconds
+        await new Promise(r => setTimeout(r, 2000));
+
+        // go to the winner info
+        document.location.href = "endOfGame.html";
     }
 
     generalRowModificator = -generalRowModificator;
@@ -393,3 +405,7 @@ function isBeatingThisWayPossible(row, column, rowMod, columnMod) {
     }
     return false;
 }
+
+// async function sleep(ms) {
+//     return new Promise(resolve => setTimeout(resolve, ms));
+//   }

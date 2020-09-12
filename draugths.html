@@ -3,13 +3,14 @@
 <head>
 
 	<meta charset="utf-8">
-	<title>Draugths and Chess online</title>
-	<meta name="keywords" content="javascript, jQuery, game, chess, draughts">
+	<title>Draugths online</title>
+	<meta name="keywords" content="javascript, jQuery, game, draughts">
 	<meta name="author" content="BW">
 
 	<meta http-equiv="X-Ua-Compatible" content="IE=edge,chrome=1">
 
 	<link rel="stylesheet" href="css/main.css">
+	<link rel="stylesheet" href="css/game.css">
 
 	<!--[if lt IE 9]>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -91,10 +92,11 @@
 
 	<script src="js/jquery-3.2.1.min.js"></script>
 	<script src="js/main.js"></script>
-	<script src="js/draughts.js"></script>
+    <script src="js/draughts.js"></script>
 
     <script>
         update();
+        sessionStorage.setItem("winner", "undefined");
     </script>
 </body>
 </html>
